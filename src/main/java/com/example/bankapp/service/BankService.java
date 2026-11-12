@@ -11,6 +11,7 @@ import com.example.bankapp.repository.BankTransactionRepository;
 import com.example.bankapp.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -81,7 +82,8 @@ public class BankService {
     }
 
     // The withdrawal, deposit and SUCCESS record are one atomic database transaction.
-    @Transactional(rollbackFor = Exception.class)
+   @Transactional(rollbackFor = Exception.class)
+    //@Transactional(propagation = Propagation.SUPPORTS)
     public BankTransaction transfer(TransferRequest request) {
         String from = request.getFromAccount().trim();
         String to = request.getToAccount().trim();

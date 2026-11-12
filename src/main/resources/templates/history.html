@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account History</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div><h1>Account transaction history</h1><p>Full transaction activity for this customer</p></div>
+    <a class="button light" th:href="@{/}">Back to dashboard</a>
+</header>
+<main class="container">
+    <section class="panel account-summary">
+        <div>
+            <span class="muted">Customer</span>
+            <h2 th:text="${customer.fullName}">Customer name</h2>
+            <p th:text="'Account: ' + ${customer.accountNumber}"></p>
+            <p th:text="${customer.email}"></p>
+        </div>
+        <div>
+            <span class="muted">Current balance</span>
+            <h2 class="money" th:text="${'LKR ' + #numbers.formatDecimal(customer.balance, 1, 2)}">LKR 0.00</h2>
+            <span class="muted">Total successful amount sent</span>
+            <h3 class="money" th:text="${'LKR ' + #numbers.formatDecimal(totalSent, 1, 2)}">LKR 0.00</h3>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Transaction history</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>ID</th><th>From</th><th>To</th><th>Amount</th><th>Status</th><th>Description</th><th>Date</th></tr></thead>
+                <tbody>
+                <tr th:each="t : ${transactions}">
+                    <td th:text="${t.id}"></td>
+                    <td th:text="${t.fromAccount ?: '-'}"></td>
+                    <td th:text="${t.toAccount ?: '-'}"></td>
+                    <td class="money" th:text="${'LKR ' + #numbers.formatDecimal(t.amount, 1, 2)}"></td>
+                    <td><span class="status" th:classappend="${t.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'" th:text="${t.status}"></span></td>
+                    <td th:text="${t.description}"></td>
+                    <td th:text="${#temporals.format(t.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(transactions)}"><td colspan="7" class="empty">No transaction history for this account.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+<footer>Bank Transfer System · Full-Stack Software Development</footer>
+</body>
+</html>
